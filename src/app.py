@@ -60,9 +60,9 @@ def app():
     
     with container.container():
         st.title("Input and Output Comparison")
-        
+        st.text("Aim :- You will be given a prompt and you have to guess the emotion of that prompt correctly.Convey this emotion succesfully to your human friend outside and make sure that the AI is not able to guess this emotions correctly. Only then can you leave this Timeline.")
         # Ensure the text area resets by providing a key and default value.
-        input_text = st.text_area("Enter your sentence (max 100 words):", key="input_text", value="")
+        input_text = st.text_area(" Enter your sentence (max 100 words):", key="input_text", value="")
         
         if input_text:
             if len(input_text.split()) > 100:
@@ -77,9 +77,6 @@ def app():
                 
                 st.write("**Model Output:**", norm_ground)
                 st.write("**Human Output:**", norm_human)
-                
-                # Normalize outputs and ground truth for comparison.
-                
                 
                 # Output success only if human output equals ground truth and model output does not.
                 if compare_outputs(norm_model, norm_human):
