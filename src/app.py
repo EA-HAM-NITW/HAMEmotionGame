@@ -11,7 +11,7 @@ from src.const import OPENAI_API_KEY
 
 
 # Global ground truth value
-GROUND_TRUTH = "EXPECTED OUTPUT"
+GROUND_TRUTH = "love"
 
 # streamlit run --server.fileWatcherType none run.py
 
@@ -51,7 +51,9 @@ def compare_outputs(model_out, human_out):
     # Convert outputs to lowercase and strip whitespace before comparing
     norm_model = model_out.lower().strip()
     norm_human = human_out.lower().strip()
-    return norm_model == norm_human
+    return (GROUND_TRUTH == norm_human and GROUND_TRUTH != norm_model)
+
+
 def app():
     # Create an empty container that will hold the entire UI
     container = st.empty()
@@ -67,22 +69,26 @@ def app():
                 st.error("Your input exceeds 100 words. Please try again.")
             else:
                 # Get outputs from the model and human functions.
-                model_out = model_output(input_text)
-                human_out = human_output(input_text)
-                
-                st.write("**Model Output:**", model_out)
-                st.write("**Human Output:**", human_out)
-                
-                # Normalize outputs and ground truth for comparison.
+                human_out = model_output(input_text)
+                model_out = human_output(input_text)
                 norm_ground = GROUND_TRUTH.lower().strip()
                 norm_human = human_out.lower().strip()
                 norm_model = model_out.lower().strip()
                 
+                st.write("**Model Output:**", norm_ground)
+                st.write("**Human Output:**", norm_human)
+                
+                # Normalize outputs and ground truth for comparison.
+                
+                
                 # Output success only if human output equals ground truth and model output does not.
-                if norm_human == norm_ground and norm_model != norm_ground:
-                    st.success("Success! Human output matches the ground truth and model output does not.")
+                if compare_outputs(norm_model, norm_human):
+                    st.success("Success! Human understands your emotions and the AI Machine is confused!!!.")
                 else:
-                    st.error("Outputs mismatch!")
+                    if GROUND_TRUTH==norm_model:
+                        st.error('AI caught your escape!!!')
+                    if GROUND_TRUTH!=norm_human:
+                        st.error('Human failed to understand your emotions (Incorrect emotion)!!!')
                 
                 # Retry button: clear the container and session state, then restart the app.
                 if st.button("Retry", key="retry_button"):
